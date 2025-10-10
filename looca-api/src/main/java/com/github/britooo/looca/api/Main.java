@@ -14,10 +14,10 @@ public class Main {
         Scanner leitorInicial = new Scanner(System.in);
 
         System.out.println("Bem-vindo(a) a HealthGuard!");
-        System.out.print("Digite COMEÇAR para dar inicio ao monitoramento de rede:");
+        System.out.print("Dar inicio ao monitoramento de rede? (s/n): ");
         String respostaUsuario = leitorInicial.nextLine();
 
-        if (respostaUsuario.equalsIgnoreCase("COMEÇAR")){
+        if (respostaUsuario.equalsIgnoreCase("s")){
             long brAntesCaptura = 0;
             long beAntesCaptura = 0;
 
@@ -47,7 +47,7 @@ public class Main {
                 Double dbe_Megabytes = diferencaBytesRecebidos / (1024.0 * 1024.0);
 
                 LocalDateTime dtHoraCaptura = LocalDateTime.now();
-                DateTimeFormatter formatacao_dtHoraCaptura = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                DateTimeFormatter formatacao_dtHoraCaptura = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
                 System.out.printf("[%s] Últimos 5s - Recebidos: %.2f MB | Enviados: %.2f MB%n",
                         dtHoraCaptura.format(formatacao_dtHoraCaptura),
@@ -63,8 +63,10 @@ public class Main {
                     e.printStackTrace();
                 }
             }
-        } else {
-            System.out.println("Monitoramento cancelado. Encerrando programa.");
+        } else if (respostaUsuario.equalsIgnoreCase("n")) {
+            System.out.println("Bye");
+        } else{
+            System.out.println("Comando não encontrado. Encerrando programa.");
         }
     }
 }
