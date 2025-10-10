@@ -12,22 +12,23 @@ public class Main {
     public static void main(String[] args) {
         Looca looca = new Looca();
         Scanner leitorInicial = new Scanner(System.in);
+        List<RedeInterface> interfaces = looca.getRede().getGrupoDeInterfaces().getInterfaces();
 
         System.out.println("Bem-vindo(a) a HealthGuard!");
         System.out.print("Dar inicio ao monitoramento de rede? (s/n): ");
         String respostaUsuario = leitorInicial.nextLine();
 
         if (respostaUsuario.equalsIgnoreCase("s")){
+            System.out.println("\nIniciando monitoramento da rede...\n");
+
             long brAntesCaptura = 0;
             long beAntesCaptura = 0;
 
-            List<RedeInterface> interfaces = looca.getRede().getGrupoDeInterfaces().getInterfaces();
                 for (int i = 0; i < interfaces.size(); i++) {
                     RedeInterface byteAnterior = interfaces.get(i);
                     brAntesCaptura += byteAnterior.getBytesRecebidos();
                     beAntesCaptura += byteAnterior.getBytesEnviados();
                 }
-                System.out.println("\nIniciando monitoramento da rede...\n");
 
             while (true){
                 long brNaCaptura = 0;
