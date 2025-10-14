@@ -1,26 +1,39 @@
 package guard.health;
-import org.apache.commons.dbcp2.BasicDataSource;
-import org.springframework.jdbc.core.JdbcTemplate;
 
-public class ConexaoBanco{
-    private final JdbcTemplate jdbcTemplate;
-    private  final BasicDataSource basicDataSource;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
-    public ConexaoBanco(){
-        BasicDataSource basicDataSource = new BasicDataSource();
-        basicDataSource.setUrl("jdbc:h2:mem:filmes");
-        basicDataSource.setUsername("sa");
-        basicDataSource.setPassword("");
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
 
-        this.basicDataSource = basicDataSource;
-        this.jdbcTemplate = new JdbcTemplate(basicDataSource);
+public class ConexaoBanco {
+    private DataSource conexao;
+
+    public ConexaoBanco() {
+        DriverManagerDataSource driver = new DriverManagerDataSource();
+        driver.setUsername("USUARIO");
+        driver.setPassword("SENHA");
+        driver.setUrl("jdbc:mysql://localhost:3306/NOME-BANCO");
+        driver.setDriverClassName("com.mysql.cj.jdbc.Driver");
+        this.conexao = driver;
+
     }
 
-    public JdbcTemplate getJdbcTemplate() {
-        return jdbcTemplate;
+    public DataSource getConexao() {
+        return this.conexao;
     }
 
-    public BasicDataSource getBasicDataSource() {
-        return basicDataSource;
+    public boolean verificarConexao() {
+        try (Connection verConexao = conexao.getConnection()) {
+            if (verConexao != null && !verConexao.isClosed()) {
+                System.out.println("Conexão realizada com sucesso no banco de dados!");
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println("Falha ao conectar com o banco de dados");
+            e.printStackTrace();
+        }
+        return false;
     }
 }
+
