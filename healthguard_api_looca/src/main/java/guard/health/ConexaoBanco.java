@@ -4,7 +4,10 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class ConexaoBanco {
     private DataSource conexao;
@@ -34,6 +37,22 @@ public class ConexaoBanco {
             e.printStackTrace();
         }
         return false;
+    }
+    public void inserirBanco(Boolean conexaoAtiva) throws SQLException {
+        String sql = "INSERT INTO nome_bancp (horario, coluna_conexao) VALUES (?, ?)";
+
+        Connection conn = this.conexao.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql);
+
+        stmt.setTimestamp(1, Timestamp.valueOf(LocalDateTime.now()));
+        stmt.setBoolean(2, conexaoAtiva);
+
+        stmt.executeUpdate();
+
+        stmt.close();
+        conn.close();
+
+        System.out.println("Inserido com sucesso ");
     }
 }
 

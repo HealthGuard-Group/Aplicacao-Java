@@ -3,12 +3,14 @@ package guard.health;
 import com.github.britooo.looca.api.core.Looca;
 import com.github.britooo.looca.api.group.rede.RedeInterface;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException, SQLException {
         Looca looca = new Looca();
+        ConexaoBanco banco = new ConexaoBanco();
         Scanner leitorInicial = new Scanner(System.in);
 
         List<RedeInterface> interfaces = looca.getRede().getGrupoDeInterfaces().getInterfaces();
@@ -29,6 +31,7 @@ public class Main {
         long recebidosAnteriores = -1;
         String ipMonitorado = "";
         Boolean primeiraExecucao = true;
+
         while(true) {
             boolean redeConectada = false;
 
@@ -46,18 +49,19 @@ public class Main {
                         long recebidos = rede.getBytesRecebidos();
 
                         if ((enviadosAnteriores == -1 || !ip.equals(ipMonitorado)) && primeiraExecucao) {
-
                             System.out.println("Rede (" + ip + ") Encontrada. Iniciando monitoramento.");
                             primeiraExecucao = false;
                             enviadosAnteriores = enviados;
                             recebidosAnteriores = recebidos;
                             ipMonitorado = ip;
 
+
                         }  else if(enviadosAnteriores == -1 || !ip.equals(ipMonitorado)) {
                             System.out.println("Rede (" + ip + ")desconectada - Tentando reconectar-se... ");
                             enviadosAnteriores = enviados;
                             recebidosAnteriores = recebidos;
                             ipMonitorado = ip;
+
                         } else {
                             if (enviados > enviadosAnteriores || recebidos > recebidosAnteriores) {
                                 System.out.println("Rede (" + ip + ") está conectada. Houve tráfego.");
@@ -79,7 +83,6 @@ public class Main {
                 }
             }
 
-
             if (!redeConectada) {
 
                 if (enviadosAnteriores != -1) {
@@ -89,6 +92,7 @@ public class Main {
                     ipMonitorado = "";
                 }
             }
+//            banco.inserirBanco(conexao);
 
             Thread.sleep(5000);
             // inserir no banco dentro desta chave
