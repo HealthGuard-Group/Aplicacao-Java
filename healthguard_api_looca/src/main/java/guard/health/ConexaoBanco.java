@@ -39,7 +39,7 @@ public class ConexaoBanco {
         return false;
     }
     public void inserirBanco(Boolean conexaoAtiva) throws SQLException {
-        String sql = "INSERT INTO nome_bancp (horario, coluna_conexao) VALUES (?, ?)";
+        String sql = "INSERT INTO HealthGuard (dataCapturada, medidaCapturada) VALUES (?, ?)";
 
         Connection conn = this.conexao.getConnection();
         PreparedStatement stmt = conn.prepareStatement(sql);

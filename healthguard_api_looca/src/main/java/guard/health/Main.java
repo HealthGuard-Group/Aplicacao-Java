@@ -28,7 +28,7 @@ public class Main {
         long recebidosAnteriores = -1;
         String ipMonitorado = "";
         Boolean primeiraExecucao = true;
-        boolean conexao;
+        boolean conexao = false;
 
         while (true) {
             List<RedeInterface> interfaces = looca.getRede().getGrupoDeInterfaces().getInterfaces();
@@ -100,7 +100,7 @@ public class Main {
             }
 
             // A variável 'conexao' tem o status final e está pronta para ser usada.
-            // banco.inserirBanco(conexao);
+            banco.inserirBanco(conexao);
 
             Thread.sleep(5000);
         }
