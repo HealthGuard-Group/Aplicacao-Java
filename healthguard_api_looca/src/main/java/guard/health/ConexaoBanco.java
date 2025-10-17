@@ -16,7 +16,7 @@ public class ConexaoBanco {
         DriverManagerDataSource driver = new DriverManagerDataSource();
         driver.setUsername("USUARIO");
         driver.setPassword("SENHA");
-        driver.setUrl("jdbc:mysql://localhost:3306/NOME-BANCO");
+        driver.setUrl("jdbc:mysql://localhost:3306/HealthGuard");
         driver.setDriverClassName("com.mysql.cj.jdbc.Driver");
         this.conexao = driver;
 
@@ -38,8 +38,18 @@ public class ConexaoBanco {
         }
         return false;
     }
+
+//    public String retornarCodigoDac(String codDac)throws SQLException{
+//        String sql = "SELECT idDac FROM Dac WHERE codigoValidacao = ?";
+//
+//        Connection conn = this.conexao.getConnection();
+//        PreparedStatement stmt = conn.prepareStatement(sql);
+//        stmt.setString(1, codDac);
+//
+//    }
+
     public void inserirBanco(Boolean conexaoAtiva) throws SQLException {
-        String sql = "INSERT INTO HealthGuard (dataCapturada, medidaCapturada) VALUES (?, ?)";
+        String sql = "INSERT INTO Leitura (dataCapturada, medidaCapturada) VALUES (?, ?)";
 
         Connection conn = this.conexao.getConnection();
         PreparedStatement stmt = conn.prepareStatement(sql);
