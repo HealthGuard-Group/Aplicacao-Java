@@ -12,6 +12,8 @@ public class Main {
     public static void main(String[] args) throws InterruptedException, SQLException {
         Looca looca = new Looca();
         ConexaoBanco banco = new ConexaoBanco();
+        Scanner scanner = new Scanner(System.in);
+
         System.out.println("""
                                      _ _   _       ___                     _\s
                      /\\  /\\___  __ _| | |_| |__   / _ \\_   _  __ _ _ __ __| |
@@ -20,9 +22,12 @@ public class Main {
                    \\/ /_/ \\___|\\__,_|_|\\__|_| |_\\____/ \\__,_|\\__,_|_|  \\__,_|
                 
                 __________________________________________________________________
-                Verificação de Rede...
+                Digite o código de identificação do DAC:
                 __________________________________________________________________
                 """);
+
+        String codigoDac = scanner.nextLine();
+        banco.iniciarCaptura(codigoDac);
 
         long enviadosAnteriores = -1;
         long recebidosAnteriores = -1;
