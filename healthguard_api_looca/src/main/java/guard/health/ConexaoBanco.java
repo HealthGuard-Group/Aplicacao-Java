@@ -1,9 +1,12 @@
 package guard.health;
 
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.transaction.reactive.AbstractReactiveTransactionManager;
+
 import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.Scanner;
 
 public class ConexaoBanco {
     private DataSource conexao;
@@ -16,8 +19,8 @@ public class ConexaoBanco {
 
     public ConexaoBanco() {
         DriverManagerDataSource driver = new DriverManagerDataSource();
-        driver.setUsername("USUARIO");
-        driver.setPassword("SENHA");
+        driver.setUsername("root");
+        driver.setPassword("tati6540");
         driver.setUrl("jdbc:mysql://localhost:3306/HealthGuard");
         driver.setDriverClassName("com.mysql.cj.jdbc.Driver");
         this.conexao = driver;
@@ -38,8 +41,9 @@ public class ConexaoBanco {
 
     public void iniciarCaptura(String codigoValidacao) {
         String sqlDac = "SELECT idDac, fkUnidadeDeAtendimento, nomeDeIdentificacao FROM Dac WHERE codigoValidacao = ?";
-
         String sqlMedicoes = "SELECT ms.idMedicoesSelecionadas AS fkMedicoesSelecionadas,ms.fkMedicoesDisponiveis AS fkMedicoesDisponiveis FROM MedicoesSelecionadas ms WHERE ms.fkDac = ? LIMIT 1";
+
+        String sqlNomeUnidade = "SELECT ua.nomeFantasia FROM UnidadeDeAtendimento ua JOIN Dac d ON ua.idUnidadeDeAtendimento = d.fkUnidadeDeAtendimento WHERE d.codigoValidacao = ?";
 
         try (Connection conn = conexao.getConnection();
              PreparedStatement stmtDac = conn.prepareStatement(sqlDac)) {
@@ -52,7 +56,28 @@ public class ConexaoBanco {
                 this.fkUnidadeDeAtendimento = rsDac.getInt("fkUnidadeDeAtendimento");
                 this.nomeDac = rsDac.getString("nomeDeIdentificacao");
 
-                System.out.println("Olá, " + nomeDac + "! Iniciando captura de medições...");
+                String nomeUnidade = "Não encontrada";
+                try (PreparedStatement stmtUnidade = conn.prepareStatement(sqlNomeUnidade)) {
+                    stmtUnidade.setString(1, codigoValidacao);
+                    ResultSet rsUnidade = stmtUnidade.executeQuery();
+
+                    if (rsUnidade.next()) {
+                        nomeUnidade = rsUnidade.getString("nomeFantasia");
+                    }
+                }
+
+                System.out.printf("""
+                    
+                    
+                    
+                    MONITORAMENTO DE REDE | HEALTHGUARD
+                    +--------------------------------------------+
+                    |MAQUINA: %s
+                    |UNIDADE: %s
+                    +____________________________________________
+                    |Iniciando captura de medições...
+                    %n""", nomeDac, nomeUnidade);
+
 
                 try (PreparedStatement stmtMedicoes = conn.prepareStatement(sqlMedicoes)) {
                     stmtMedicoes.setInt(1, idDac);
@@ -61,12 +86,12 @@ public class ConexaoBanco {
                     if (rsMedicoes.next()) {
                         this.fkMedicoesSelecionadas = rsMedicoes.getInt("fkMedicoesSelecionadas");
                         this.fkMedicoesDisponiveis = rsMedicoes.getInt("fkMedicoesDisponiveis");
-
                     }
                 }
 
             } else {
                 System.out.println("Código de validação não encontrado no banco.");
+                tentarNovamente();
             }
 
         } catch (SQLException e) {
@@ -74,7 +99,12 @@ public class ConexaoBanco {
             e.printStackTrace();
         }
     }
-
+    public void tentarNovamente() {
+        Scanner scanner1 = new Scanner(System.in);
+        System.out.println("insira o codigo de validação novamente: ");
+         String codigo =scanner1.nextLine();
+        iniciarCaptura(codigo);
+    }
     public void inserirBanco(boolean conexaoAtiva) {
         String sql = "INSERT INTO Leitura (fkMedicoesDisponiveis, fkMedicoesSelecionadas, fkDac, fkUnidadeDeAtendimento, medidaCapturada, dataCaptura) VALUES (?, ?, ?, ?, ?, ?)";
 
