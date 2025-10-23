@@ -20,7 +20,7 @@ public class ConexaoBanco {
     public ConexaoBanco() {
         DriverManagerDataSource driver = new DriverManagerDataSource();
         driver.setUsername("root");
-        driver.setPassword("tati6540");
+        driver.setPassword("0000");
         driver.setUrl("jdbc:mysql://localhost:3306/HealthGuard");
         driver.setDriverClassName("com.mysql.cj.jdbc.Driver");
         this.conexao = driver;
@@ -40,7 +40,7 @@ public class ConexaoBanco {
     }
 
     public void iniciarCaptura(String codigoValidacao) {
-        String sqlDac = "SELECT idDac, fkUnidadeDeAtendimento, nomeDeIdentificacao FROM Dac WHERE codigoValidacao = ?";
+        String sqlDac = "SELECT idDac, fkUnidadeDeAtendimento, nomeIdentificacao FROM Dac WHERE codigoValidacao = ?";
         String sqlMedicoes = "SELECT ms.idMedicoesSelecionadas AS fkMedicoesSelecionadas,ms.fkMedicoesDisponiveis AS fkMedicoesDisponiveis FROM MedicoesSelecionadas ms WHERE ms.fkDac = ? LIMIT 1";
 
         String sqlNomeUnidade = "SELECT ua.nomeFantasia FROM UnidadeDeAtendimento ua JOIN Dac d ON ua.idUnidadeDeAtendimento = d.fkUnidadeDeAtendimento WHERE d.codigoValidacao = ?";
@@ -54,7 +54,7 @@ public class ConexaoBanco {
             if (rsDac.next()) {
                 this.idDac = rsDac.getInt("idDac");
                 this.fkUnidadeDeAtendimento = rsDac.getInt("fkUnidadeDeAtendimento");
-                this.nomeDac = rsDac.getString("nomeDeIdentificacao");
+                this.nomeDac = rsDac.getString("nomeIdentificacao");
 
                 String nomeUnidade = "Não encontrada";
                 try (PreparedStatement stmtUnidade = conn.prepareStatement(sqlNomeUnidade)) {
