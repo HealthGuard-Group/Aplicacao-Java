@@ -106,7 +106,7 @@ public class Main {
             }
 
             // A variável 'conexao' tem o status final e está pronta para ser usada.
-            banco.inserirBanco(conexao);
+              banco.inserirBanco(conexao);
 
             Thread.sleep(5000);
         }

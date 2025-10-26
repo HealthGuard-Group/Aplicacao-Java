@@ -19,9 +19,9 @@ public class ConexaoBanco {
 
     public ConexaoBanco() {
         DriverManagerDataSource driver = new DriverManagerDataSource();
-        driver.setUsername("root");
-        driver.setPassword("0000");
-        driver.setUrl("jdbc:mysql://localhost:3306/HealthGuard");
+        driver.setUsername("logan");
+        driver.setPassword("senha-segura123");
+        driver.setUrl("jdbc:mysql://44.199.59.133:3306/HealthGuard");
         driver.setDriverClassName("com.mysql.cj.jdbc.Driver");
         this.conexao = driver;
     }
