@@ -104,9 +104,13 @@ public class Main {
                     ipMonitorado = "";
                 }
             }
+            try {
+                // A variável 'conexao' tem o status final e está pronta para ser usada.
+                banco.inserirBanco(conexao);
+            } catch (Exception e) {
+                System.out.println("tentando re-conectar com banco de dados...");
+            }
 
-            // A variável 'conexao' tem o status final e está pronta para ser usada.
-              banco.inserirBanco(conexao);
 
             Thread.sleep(5000);
         }
