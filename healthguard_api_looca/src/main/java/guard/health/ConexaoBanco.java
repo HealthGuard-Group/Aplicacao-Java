@@ -108,7 +108,7 @@ public class ConexaoBanco {
     public void inserirBanco(boolean conexaoAtiva) {
         String sql = "INSERT INTO Leitura (fkMedicoesDisponiveis, fkMedicoesSelecionadas, fkDac, fkUnidadeDeAtendimento, medidaCapturada, dataCaptura) VALUES (?, ?, ?, ?, ?, ?)";
 
-        String medida = conexaoAtiva ? "Conectado" : "Desconectado";
+        String medida = conexaoAtiva ? "1" : "0";
 
         try (Connection conn = conexao.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

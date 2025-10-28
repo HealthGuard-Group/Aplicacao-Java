@@ -109,6 +109,7 @@ public class Main {
                 banco.inserirBanco(conexao);
             } catch (Exception e) {
                 System.out.println("tentando re-conectar com banco de dados...");
+
             }
 
 
