@@ -124,7 +124,7 @@ public class ConexaoBanco {
 
         } catch (SQLException e) {
             System.out.println(" Erro ao inserir leitura no banco de dados.");
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
