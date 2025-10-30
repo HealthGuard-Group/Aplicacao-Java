@@ -56,6 +56,9 @@ public class ConexaoBanco {
                 this.fkUnidadeDeAtendimento = rsDac.getInt("fkUnidadeDeAtendimento");
                 this.nomeDac = rsDac.getString("nomeIdentificacao");
 
+                this.fkMedicoesSelecionadas = 4;
+                this.fkMedicoesDisponiveis = 4;
+
                 String nomeUnidade = "Não encontrada";
                 try (PreparedStatement stmtUnidade = conn.prepareStatement(sqlNomeUnidade)) {
                     stmtUnidade.setString(1, codigoValidacao);
@@ -77,17 +80,6 @@ public class ConexaoBanco {
                     +____________________________________________
                     |Iniciando captura de medições...
                     %n""", nomeDac, nomeUnidade);
-
-
-                try (PreparedStatement stmtMedicoes = conn.prepareStatement(sqlMedicoes)) {
-                    stmtMedicoes.setInt(1, idDac);
-                    ResultSet rsMedicoes = stmtMedicoes.executeQuery();
-
-                    if (rsMedicoes.next()) {
-                        this.fkMedicoesSelecionadas = rsMedicoes.getInt("fkMedicoesSelecionadas");
-                        this.fkMedicoesDisponiveis = rsMedicoes.getInt("fkMedicoesDisponiveis");
-                    }
-                }
 
             } else {
                 System.out.println("Código de validação não encontrado no banco.");
