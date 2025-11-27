@@ -7,7 +7,7 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.Scanner;
 
-public class ConexaoBanco {
+public class Conexao {
     private DataSource conexao;
 
     private int idDac;
