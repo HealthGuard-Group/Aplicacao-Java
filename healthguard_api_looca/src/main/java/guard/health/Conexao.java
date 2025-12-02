@@ -20,7 +20,7 @@ public class Conexao {
         DriverManagerDataSource driver = new DriverManagerDataSource();
         driver.setUsername("logan");
         driver.setPassword("senha-segura123");
-        driver.setUrl("jdbc:mysql://44.199.59.133:3306/HealthGuard");
+        driver.setUrl("jdbc:mysql://127.0.0.1:3306/HealthGuard");
         driver.setDriverClassName("com.mysql.cj.jdbc.Driver");
         this.conexao = driver;
     }
@@ -39,8 +39,18 @@ public class Conexao {
     }
 
     public void iniciarCaptura(String codigoValidacao) {
-        String sqlDac = "SELECT idDac, fkUnidadeDeAtendimento, nomeIdentificacao FROM Dac WHERE codigoValidacao = ?";
-        String sqlNomeUnidade = "SELECT ua.nomeFantasia FROM UnidadeDeAtendimento ua JOIN Dac d ON ua.idUnidadeDeAtendimento = d.fkUnidadeDeAtendimento WHERE d.codigoValidacao = ?";
+        String sqlDac = "SELECT\\n\" +\n" +
+                "                \"    d.idDac,\\n\" +\n" +
+                "                \"    d.fkUnidadeDeAtendimento,\\n\" +\n" +
+                "                \"    d.nomeIdentificacao,\\n\" +\n" +
+                "                \"    ms.idMedicoesSelecionadas AS fkMedicoesSelecionadas,\\n\" +\n" +
+                "                \"    ms.fkMedicoesDisponiveis AS fkMedicoesDisponiveis\\n\" +\n" +
+                "                \"FROM\\n\" +\n" +
+                "                \"    Dac d\\n\" +\n" +
+                "                \"INNER JOIN\\n\" +\n" +
+                "                \"    MedicoesSelecionadas ms ON d.idDac = ms.fkDac\\n\" +\n" +
+                "                \"WHERE\\n\" +\n" +
+                "                \"    d.codigoValidacao = ? and fkMedicoesDisponiveis = 11;";
 
         try (Connection conn = conexao.getConnection();
              PreparedStatement stmtDac = conn.prepareStatement(sqlDac)) {
@@ -52,9 +62,8 @@ public class Conexao {
                 this.idDac = rsDac.getInt("idDac");
                 this.fkUnidadeDeAtendimento = rsDac.getInt("fkUnidadeDeAtendimento");
                 this.nomeDac = rsDac.getString("nomeIdentificacao");
-
-                this.fkMedicoesSelecionadas = 4;
-                this.fkMedicoesDisponiveis = 4;
+                this.fkMedicoesSelecionadas = rsDac.getInt("fkMedicoesSelecionadas");
+                this.fkMedicoesDisponiveis = 11;
 
                 String nomeUnidade = "Não encontrada";
                 try (PreparedStatement stmtUnidade = conn.prepareStatement(sqlNomeUnidade)) {
