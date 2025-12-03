@@ -21,7 +21,7 @@ public class Conexao {
         DriverManagerDataSource driver = new DriverManagerDataSource();
         driver.setUsername("logan");
         driver.setPassword("senha-segura123");
-        driver.setUrl("jdbc:mysql://127.0.0.1:3306/HealthGuard"); // ou 44.199.59.133 conforme ambiente
+        driver.setUrl("jdbc:mysql://44.199.86.212:3306/HealthGuard");
         driver.setDriverClassName("com.mysql.cj.jdbc.Driver");
         this.conexao = driver;
     }

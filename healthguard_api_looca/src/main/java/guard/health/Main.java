@@ -10,9 +10,9 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) throws InterruptedException, SQLException {
         Looca looca = new Looca();
-        ConexaoBanco banco = new ConexaoBanco();
+        Conexao banco = new Conexao();
         SlackNotifier slack = new SlackNotifier(
-                "https://hooks.slack.com/services/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"
+                "Token-Slack"
         );
         Scanner scanner = new Scanner(System.in);
 
