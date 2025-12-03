@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.Scanner;
 
 public class Conexao {
+
     private DataSource conexao;
 
     private int idDac;
@@ -16,11 +17,11 @@ public class Conexao {
     private int fkMedicoesDisponiveis;
     private String nomeDac;
 
-    public ConexaoBanco() {
+    public Conexao() {
         DriverManagerDataSource driver = new DriverManagerDataSource();
         driver.setUsername("logan");
         driver.setPassword("senha-segura123");
-        driver.setUrl("jdbc:mysql://127.0.0.1:3306/HealthGuard");
+        driver.setUrl("jdbc:mysql://127.0.0.1:3306/HealthGuard"); // ou 44.199.59.133 conforme ambiente
         driver.setDriverClassName("com.mysql.cj.jdbc.Driver");
         this.conexao = driver;
     }
@@ -39,18 +40,27 @@ public class Conexao {
     }
 
     public void iniciarCaptura(String codigoValidacao) {
-        String sqlDac = "SELECT\\n\" +\n" +
-                "                \"    d.idDac,\\n\" +\n" +
-                "                \"    d.fkUnidadeDeAtendimento,\\n\" +\n" +
-                "                \"    d.nomeIdentificacao,\\n\" +\n" +
-                "                \"    ms.idMedicoesSelecionadas AS fkMedicoesSelecionadas,\\n\" +\n" +
-                "                \"    ms.fkMedicoesDisponiveis AS fkMedicoesDisponiveis\\n\" +\n" +
-                "                \"FROM\\n\" +\n" +
-                "                \"    Dac d\\n\" +\n" +
-                "                \"INNER JOIN\\n\" +\n" +
-                "                \"    MedicoesSelecionadas ms ON d.idDac = ms.fkDac\\n\" +\n" +
-                "                \"WHERE\\n\" +\n" +
-                "                \"    d.codigoValidacao = ? and fkMedicoesDisponiveis = 11;";
+        String sqlDac = """
+                SELECT
+                    d.idDac,
+                    d.fkUnidadeDeAtendimento,
+                    d.nomeIdentificacao,
+                    ms.idMedicoesSelecionadas AS fkMedicoesSelecionadas,
+                    ms.fkMedicoesDisponiveis AS fkMedicoesDisponiveis
+                FROM
+                    Dac d
+                INNER JOIN
+                    MedicoesSelecionadas ms ON d.idDac = ms.fkDac
+                WHERE
+                    d.codigoValidacao = ? AND ms.fkMedicoesDisponiveis = 11;
+                """;
+
+        String sqlNomeUnidade = """
+                SELECT ua.nomeFantasia 
+                FROM UnidadeDeAtendimento ua 
+                JOIN Dac d ON ua.idUnidadeDeAtendimento = d.fkUnidadeDeAtendimento 
+                WHERE d.codigoValidacao = ?;
+                """;
 
         try (Connection conn = conexao.getConnection();
              PreparedStatement stmtDac = conn.prepareStatement(sqlDac)) {
@@ -69,22 +79,20 @@ public class Conexao {
                 try (PreparedStatement stmtUnidade = conn.prepareStatement(sqlNomeUnidade)) {
                     stmtUnidade.setString(1, codigoValidacao);
                     ResultSet rsUnidade = stmtUnidade.executeQuery();
-
                     if (rsUnidade.next()) {
                         nomeUnidade = rsUnidade.getString("nomeFantasia");
                     }
                 }
 
                 System.out.printf("""
-                    
-                    
-                    MONITORAMENTO DE REDE | HEALTHGUARD
-                    +--------------------------------------------+
-                    |MAQUINA: %s
-                    |UNIDADE: %s
-                    +____________________________________________
-                    |Iniciando captura de medições...
-                    %n""", nomeDac, nomeUnidade);
+                        
+                        MONITORAMENTO DE REDE | HEALTHGUARD
+                        +--------------------------------------------+
+                        |MAQUINA: %s
+                        |UNIDADE: %s
+                        +____________________________________________
+                        |Iniciando captura de medições...
+                        %n""", nomeDac, nomeUnidade);
 
             } else {
                 System.out.println("Código de validação não encontrado.");
@@ -105,7 +113,11 @@ public class Conexao {
     }
 
     public void inserirBanco(boolean conexaoAtiva) {
-        String sql = "INSERT INTO Leitura (fkMedicoesDisponiveis, fkMedicoesSelecionadas, fkDac, fkUnidadeDeAtendimento, medidaCapturada, dataCaptura) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = """
+                INSERT INTO Leitura 
+                (fkMedicoesDisponiveis, fkMedicoesSelecionadas, fkDac, fkUnidadeDeAtendimento, medidaCapturada, dataCaptura) 
+                VALUES (?, ?, ?, ?, ?, ?)
+                """;
 
         String medida = conexaoAtiva ? "1" : "0";
 
@@ -127,23 +139,20 @@ public class Conexao {
         }
     }
 
-    public int getIdDac() {
+ 
+    public int getIdDac() { 
         return idDac;
     }
-
     public int getFkUnidadeDeAtendimento() {
-        return fkUnidadeDeAtendimento;
+        return fkUnidadeDeAtendimento; 
     }
-
     public int getFkMedicoesSelecionadas() {
         return fkMedicoesSelecionadas;
     }
-
-    public int getFkMedicoesDisponiveis() {
+    public int getFkMedicoesDisponiveis() { 
         return fkMedicoesDisponiveis;
     }
-
-    public String getNomeDac() {
-        return nomeDac;
+    public String getNomeDac() { 
+        return nomeDac; 
     }
 }
